@@ -11,7 +11,7 @@ namespace IP
     [SimpleJob(RunStrategy.ColdStart, launchCount: 3, warmupCount: 0, iterationCount: 6)]
     public class Benchmark
     {
-        [Params(2, 4, 6, 8, 10, 12, 16, 18)]
+        [Params(2, 8, 16, 32)]
         public int ThredCount { get; set; }
 
         public (double, double)[][] AllGivPoints = new (double, double)[9][];
@@ -66,21 +66,21 @@ namespace IP
         {
             return Optimization.Optimize(AllGivPoints[4], AllNewPoints[4], ThredCount);
         }
-        [Benchmark]
-        public double Test6()
-        {
-            return Optimization.Optimize(AllGivPoints[5], AllNewPoints[5], ThredCount);
-        }
-        [Benchmark]
-        public double Test7()
-        {
-            return Optimization.Optimize(AllGivPoints[6], AllNewPoints[6], ThredCount);
-        }
-        [Benchmark]
-        public double Test8()
-        {
-            return Optimization.Optimize(AllGivPoints[7], AllNewPoints[7], ThredCount);
-        }
+        //[Benchmark]
+        //public double Test6()
+        //{
+        //    return Optimization.Optimize(AllGivPoints[5], AllNewPoints[5], ThredCount);
+        //}
+        //[Benchmark]
+        //public double Test7()
+        //{
+        //    return Optimization.Optimize(AllGivPoints[6], AllNewPoints[6], ThredCount);
+        //}
+        //[Benchmark]
+        //public double Test8()
+        //{
+        //    return Optimization.Optimize(AllGivPoints[7], AllNewPoints[7], ThredCount);
+        //}
     }
     public class Program
     {
