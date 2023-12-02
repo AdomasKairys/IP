@@ -95,7 +95,7 @@ namespace IP
             return jac;
         }
 
-        public static string Optimize((double, double)[] pointsGiv, (double, double)[] pointsOpt, int threadCount = 6)
+        public static double Optimize((double, double)[] pointsGiv, (double, double)[] pointsOpt, int threadCount = 6)
         {
             THREAD_COUNT = threadCount;
             int iter = 0;
@@ -104,16 +104,16 @@ namespace IP
 
             double objValOld = TargetFunc(pointsGiv, pointsOpt);
             var jac = JacobianMatrix(pointsGiv, pointsOpt);
-            Console.WriteLine("Initial " + objValOld);
+           //Console.WriteLine("Initial " + objValOld);
 
-            while (EuclideanNorm(jac) > eps && iter < 20 && step > eps)
+            while (EuclideanNorm(jac) > eps && iter < 1000 && step > eps)
             {
                 jac = jac.Select((j) => (j.Item1/EuclideanNorm(jac), j.Item2/EuclideanNorm(jac))).ToArray();
                 var temp = jac.Select((j) => (step * j.Item1, step * j.Item2)).ToArray();
                 pointsOpt = temp.Zip(pointsOpt, (j, p) => (p.Item1 - j.Item1, p.Item2 - j.Item2)).ToArray();
                 double objValNew = TargetFunc(pointsGiv, pointsOpt);
 
-                Console.WriteLine(iter + " " + objValNew);
+                //Console.WriteLine(iter + " " + objValNew);
 
                 if (objValOld < objValNew)
                 {
@@ -127,11 +127,12 @@ namespace IP
                 iter++;
             }
 
-            foreach(var point in pointsOpt)
-            {
-                Console.WriteLine(point.Item1 + " " + point.Item2);
-            }
-            return "complete";
+            //foreach(var point in pointsOpt)
+            //{
+            //    Console.WriteLine(point.Item1 + " " + point.Item2);
+            //}
+
+            return objValOld;
         }
 
         //static void Main(string[] args)
