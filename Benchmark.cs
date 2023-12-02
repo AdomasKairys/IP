@@ -57,7 +57,7 @@ namespace IP
             return Optimization.Optimize(AllGivPoints[2], AllNewPoints[2], ThredCount);
         }
         [Benchmark]
-        public string Test4()
+        public double Test4()
         {
             return Optimization.Optimize(AllGivPoints[3], AllNewPoints[3], ThredCount);
         }
