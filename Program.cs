@@ -8,7 +8,7 @@ namespace IP
 {
     internal class Program
     {
-        const int THREAD_COUNT = 8;
+        const int THREAD_COUNT = 6; //because of how the program works the ammount of threads created is equal to (THREAD_COUNT/2)^2
         static double EuclideanNorm((double, double)[] val)
         {
             double sum = 0;
@@ -135,8 +135,10 @@ namespace IP
         static void Main(string[] args)
         {
             var r = new Random();
-            (double, double)[] ranInitPoints = Enumerable.Range(0, 1000).Select(i => (-10+r.NextDouble(),-10+r.NextDouble()*20)).ToArray();
-            (double, double)[] ranNewPoints = Enumerable.Range(0, 1000).Select(i => (-10+r.NextDouble(), -10+r.NextDouble() * 20)).ToArray();
+
+            //-10+r.NextDouble()*20 == -10+r.NextDouble()*(10-(-10), where 10 and -10 are the ranges of the function and shouldn't be changed
+            (double, double)[] ranInitPoints = Enumerable.Range(0, 1000).Select(i => (-10+r.NextDouble()*20, -10+r.NextDouble()*20)).ToArray();
+            (double, double)[] ranNewPoints = Enumerable.Range(0, 1000).Select(i => (-10+r.NextDouble()*20, -10+r.NextDouble()*20)).ToArray();
 
 
             (double, double)[] initPoints = {(5.42641287, -9.58496101),
