@@ -32,7 +32,6 @@ namespace IP
             Func<(double, double), double> initialVal)
         {
             double f = initialVal(point2);
-            int n = points1.Length;
             f += points1.AsParallel().WithDegreeOfParallelism(THREAD_COUNT/2).Select(p => totalSum(p, point2)).Sum();
             return f;
         }
@@ -66,7 +65,6 @@ namespace IP
 
             double dxSum((double, double) p1, (double, double) p2) =>
                     0.6 * Math.Exp(-0.3 * (Math.Pow(p1.Item1 - p2.Item1, 2) + Math.Pow(p1.Item2 - p2.Item2, 2))) * (p1.Item1 - p2.Item1);
-
             
             double dySum((double, double) p1, (double, double) p2) =>
                     0.6 * Math.Exp(-0.3 * (Math.Pow(p1.Item1 - p2.Item1, 2) + Math.Pow(p1.Item2 - p2.Item2, 2))) * (p1.Item2 - p2.Item2);
