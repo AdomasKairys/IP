@@ -8,6 +8,7 @@ namespace IP
 {
     internal class Program
     {
+        const int THREAD_COUNT = 8;
         static double EuclideanNorm((double, double)[] val)
         {
             double sum = 0;
@@ -32,7 +33,7 @@ namespace IP
         {
             double f = initialVal(point2);
             int n = points1.Length;
-            f = Enumerable.Range(0, n).AsParallel().WithDegreeOfParallelism(8).Select((p,i) => totalSum(points1[i], point2)).Sum();
+            f += points1.AsParallel().WithDegreeOfParallelism(THREAD_COUNT/2).Select(p => totalSum(p, point2)).Sum();
             return f;
         }
 
@@ -45,17 +46,15 @@ namespace IP
             double initialPrice((double, double) p2) =>
                             0.4 + (Math.Pow(p2.Item1, 4) + Math.Pow(p2.Item2, 4) + 200 * (Math.Sin(p2.Item1) + Math.Cos(p2.Item2))) / 1000;
 
-            double fullPrice = 0;
             int n = points2.Length;
-            for (int i = 0; i < n; i++)
-            {
+
+            double fullPrice = Enumerable.Range(0,n).AsParallel().WithDegreeOfParallelism(THREAD_COUNT/2).Select(i => {
                 (double, double)[] comb = new (double, double)[points1.Length + points2.Length - 1];
                 points1.CopyTo(comb, 0);
                 points2.Where((val, indx) => indx != i).ToArray().CopyTo(comb, points1.Length - 1);
+                return Func(comb, points2[i], priceBtwTwoPnts, initialPrice);
+            }).Sum();
 
-
-                fullPrice += Func(comb, points2[i], priceBtwTwoPnts, initialPrice);
-            }
             return fullPrice;
         }
 
@@ -84,18 +83,17 @@ namespace IP
             (double, double)[] jac = ((double, double)[])points2.Clone();
             int n = jac.Length;
 
-            for(int i = 0; i < n; i++)
+            
+            Parallel.For(0, n, new ParallelOptions { MaxDegreeOfParallelism = THREAD_COUNT/2 }, i =>
             {
                 (double, double)[] comb = new (double, double)[points1.Length + points2.Length - 1];
                 points1.CopyTo(comb, 0);
                 points2.Where((val, indx) => indx != i).ToArray().CopyTo(comb, points1.Length - 1);
-                int m = comb.Length;
 
-                var dx = Task.Run( () => Func(comb, points2[i], dxSum, dxInit));
+                double dx = Func(comb, points2[i], dxSum, dxInit);
                 double dy = Func(comb, points2[i], dySum, dyInit);
-                dx.Wait();
-                jac[i] = (dx.Result, dy);
-            }
+                jac[i] = (dx, dy);
+            });
             return jac;
         }
 
@@ -143,15 +141,15 @@ namespace IP
             (double, double)[] ranNewPoints = Enumerable.Range(0, 1000).Select(i => (-10+r.NextDouble(), -10+r.NextDouble() * 20)).ToArray();
 
 
-            //(double, double)[] initPoints = {(5.42641287, -9.58496101),
-            //    (2.6729647, 4.97607765),
-            //    (-0.02985975, -5.50406709),
-            //    (-6.0387427,  5.21061424),
-            //    (-6.61778327, - 8.23320372)};
-            //(double, double)[] newPoints = { (3.70719637,  9.06786692),
-            //     (-9.92103467,  0.24384527),
-            //     ( 6.25241923,  2.25052134),
-            //     ( 4.43510635, - 4.16247864)};
+            (double, double)[] initPoints = {(5.42641287, -9.58496101),
+                (2.6729647, 4.97607765),
+                (-0.02985975, -5.50406709),
+                (-6.0387427,  5.21061424),
+                (-6.61778327, - 8.23320372)};
+            (double, double)[] newPoints = { (3.70719637,  9.06786692),
+                 (-9.92103467,  0.24384527),
+                 ( 6.25241923,  2.25052134),
+                 ( 4.43510635, - 4.16247864)};
 
 
             using (var writerx = new StreamWriter("x.txt"))
