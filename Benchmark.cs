@@ -8,10 +8,10 @@ using System.IO;
 namespace IP
 {
     [MemoryDiagnoser]
-    [SimpleJob(RunStrategy.ColdStart, launchCount: 3, warmupCount: 0, iterationCount: 6)]
+    [SimpleJob(RunStrategy.ColdStart, launchCount: 1, warmupCount: 0, iterationCount: 6)]
     public class Benchmark
     {
-        [Params(2, 8, 16, 32)]
+        [Params(1, 2, 4, 8, 16, 32, 64, 128)]
         public int ThredCount { get; set; }
 
         public (double, double)[][] AllGivPoints = new (double, double)[9][];
@@ -20,12 +20,12 @@ namespace IP
         [GlobalSetup]
         public void SetUp()
         {
-            for (int i = 0; i <= 8; i++)
+            for (int i = 0; i < 8; i++)
             {
-                using (var readerx = new StreamReader($"../../../../../../../Data/x{i}.txt")) // ../../../../../../../Data/
-                using (var readery = new StreamReader($"../../../../../../../Data/y{i}.txt"))
-                using (var readerxx = new StreamReader($"../../../../../../../Data/xx{i}.txt"))
-                using (var readeryy = new StreamReader($"../../../../../../../Data/yy{i}.txt"))
+                using (var readerx = new StreamReader($"../../../../../../../Data/x{i+1}.txt")) // ../../../../../../../Data/
+                using (var readery = new StreamReader($"../../../../../../../Data/y{i+1}.txt"))
+                using (var readerxx = new StreamReader($"../../../../../../../Data/xx{i+1}.txt"))
+                using (var readeryy = new StreamReader($"../../../../../../../Data/yy{i+1}.txt"))
                 {
                     var x = readerx.ReadToEnd().Trim().Split("\r\n");
                     var xx = readerxx.ReadToEnd().Trim().Split("\r\n");

@@ -34,7 +34,7 @@ namespace IP
             Func<(double, double), double> initialVal)
         {
             double f = initialVal(point2);
-            f += points1.AsParallel().WithDegreeOfParallelism(THREAD_COUNT/2).Select(p => totalSum(p, point2)).Sum();
+            f += points1.Select(p => totalSum(p, point2)).Sum();
             return f;
         }
 
@@ -49,7 +49,7 @@ namespace IP
 
             int n = points2.Length;
 
-            double fullPrice = Enumerable.Range(0,n).AsParallel().WithDegreeOfParallelism(THREAD_COUNT/2).Select(i => {
+            double fullPrice = Enumerable.Range(0,n).AsParallel().WithDegreeOfParallelism(THREAD_COUNT).Select(i => {
                 (double, double)[] comb = new (double, double)[points1.Length + points2.Length - 1];
                 points1.CopyTo(comb, 0);
                 points2.Where((val, indx) => indx != i).ToArray().CopyTo(comb, points1.Length - 1);
@@ -82,7 +82,7 @@ namespace IP
             int n = jac.Length;
 
             
-            Parallel.For(0, n, new ParallelOptions { MaxDegreeOfParallelism = THREAD_COUNT/2 }, i =>
+            Parallel.For(0, n, new ParallelOptions { MaxDegreeOfParallelism = THREAD_COUNT }, i =>
             {
                 (double, double)[] comb = new (double, double)[points1.Length + points2.Length - 1];
                 points1.CopyTo(comb, 0);
@@ -172,8 +172,8 @@ namespace IP
 
         //    for (int i = 1; i <= 8; i++)
         //    {
-        //        (double, double)[] ranInitPoints = Enumerable.Range(0, i * i* 15).Select(i => (-10 + r.NextDouble() * 20, -10 + r.NextDouble() * 20)).ToArray();
-        //        (double, double)[] ranNewPoints = Enumerable.Range(0, i * i * 15).Select(i => (-10 + r.NextDouble() * 20, -10 + r.NextDouble() * 20)).ToArray();
+        //        (double, double)[] ranInitPoints = Enumerable.Range(0, i * i * 8).Select(i => (-10 + r.NextDouble() * 20, -10 + r.NextDouble() * 20)).ToArray();
+        //        (double, double)[] ranNewPoints = Enumerable.Range(0, i * i * 8).Select(i => (-10 + r.NextDouble() * 20, -10 + r.NextDouble() * 20)).ToArray();
         //        using (var writerx = new StreamWriter($"x{i}.txt"))
         //        using (var writery = new StreamWriter($"y{i}.txt"))
         //        using (var writerxx = new StreamWriter($"xx{i}.txt"))
