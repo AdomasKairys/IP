@@ -11,10 +11,7 @@ namespace IP
     [SimpleJob(launchCount: 1, warmupCount:2, iterationCount: 4)]
     public class Benchmark
     {
-        [Params(1, 2, 4, 8)]
-        public int CalulationThreads { get; set; }
-
-        [Params(1, 2, 4, 8)]
+        [Params(1, 2, 4, 8, 16, 32, 64, 128)]
         public int OptimizationThreads { get; set; }
 
 
@@ -43,11 +40,51 @@ namespace IP
         }
 
         [Benchmark]
+        public Result? Test0()
+        {
+            return Optimization.Start(AllGivPoints[0], AllNewPoints[0], OptimizationThreads);
+        }
+        [Benchmark]
         public Result? Test1()
         {
-            return Optimization.Start(AllGivPoints[1], AllNewPoints[1], CalulationThreads, OptimizationThreads);
+            return Optimization.Start(AllGivPoints[1], AllNewPoints[1], OptimizationThreads);
         }
-        
+        [Benchmark]
+        public Result? Test2()
+        {
+            return Optimization.Start(AllGivPoints[2], AllNewPoints[2], OptimizationThreads);
+        }
+        [Benchmark]
+        public Result? Test3()
+        {
+            return Optimization.Start(AllGivPoints[3], AllNewPoints[3], OptimizationThreads);
+        }
+        [Benchmark]
+        public Result? Test4()
+        {
+            return Optimization.Start(AllGivPoints[4], AllNewPoints[4], OptimizationThreads);
+        }
+        [Benchmark]
+        public Result? Test5()
+        {
+            return Optimization.Start(AllGivPoints[5], AllNewPoints[5], OptimizationThreads);
+        }
+        [Benchmark]
+        public Result? Test6()
+        {
+            return Optimization.Start(AllGivPoints[6], AllNewPoints[6], OptimizationThreads);
+        }
+        [Benchmark]
+        public Result? Test7()
+        {
+            return Optimization.Start(AllGivPoints[7], AllNewPoints[7], OptimizationThreads);
+        }
+        [Benchmark]
+        public Result? Test8()
+        {
+            return Optimization.Start(AllGivPoints[8], AllNewPoints[8], OptimizationThreads);
+        }
+
     }
     public class Program
     {

@@ -37,7 +37,6 @@ namespace IP
         public const int MAX_ITER = 500;
         public const int MAX_RANDOMIZATION = 200;
 
-        private static int THREAD_COUNT_CALC = 6; //thread count for calculations (target function, jacobian matrix)
         private static int THREAD_COUNT_OPT = 6; //thread count for optimizations (multiple optimization calls)
 
         private static double EuclideanNorm((double, double)[] val)
@@ -76,7 +75,7 @@ namespace IP
             double priceOfPoint((double, double) p2) =>
                             0.4 + (Math.Pow(p2.Item1, 4) + Math.Pow(p2.Item2, 4) + 200 * (Math.Sin(p2.Item1) + Math.Cos(p2.Item2))) / 1000;
 
-            double fullPrice = points2.AsParallel().WithDegreeOfParallelism(THREAD_COUNT_CALC).Select((p2,i) => {
+            double fullPrice = points2.Select((p2,i) => {
                 (double, double)[] comb = new (double, double)[points1.Length + points2.Length - 1];
                 points1.CopyTo(comb, 0);
                 points2.Where((val, indx) => indx != i).ToArray().CopyTo(comb, points1.Length);
@@ -105,7 +104,7 @@ namespace IP
                         (4 * Math.Pow(p1.Item2, 3) + 200 * Math.Cos(p1.Item2)) / 1000;
 
 
-            (double, double)[] jac = points2.AsParallel().WithDegreeOfParallelism(THREAD_COUNT_CALC).Select((val,i) =>
+            (double, double)[] jac = points2.Select((val,i) =>
             {
                 (double, double)[] comb = new (double, double)[points1.Length + points2.Length - 1];
                 points1.CopyTo(comb, 0);
@@ -211,10 +210,9 @@ namespace IP
             return Enumerable.Range(0, size).Select(i => (-10 + ran.NextDouble() * 20, -10 + ran.NextDouble() * 20)).ToArray();
         }
 
-        public static Result? Start((double, double)[] initPoints, (double, double)[][] newPointsArray, int threadCountCalc = 1, int threadCountOpt = 1)
+        public static Result? Start((double, double)[] initPoints, (double, double)[][] newPointsArray, int threadCountOpt = 1)
         {
             THREAD_COUNT_OPT = threadCountOpt;
-            THREAD_COUNT_CALC = threadCountCalc;
 
             return newPointsArray.AsParallel().WithDegreeOfParallelism(THREAD_COUNT_OPT).Select(
                     (newPoints) => Optimize(initPoints, newPoints)).Min();
