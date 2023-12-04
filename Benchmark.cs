@@ -8,79 +8,46 @@ using System.IO;
 namespace IP
 {
     [MemoryDiagnoser]
-    [SimpleJob(RunStrategy.ColdStart, launchCount: 1, warmupCount: 0, iterationCount: 6)]
+    [SimpleJob(launchCount: 1, warmupCount:2, iterationCount: 4)]
     public class Benchmark
     {
-        [Params(1, 2, 4, 8, 16, 32, 64, 128)]
-        public int ThredCount { get; set; }
+        [Params(1, 2, 4, 8)]
+        public int CalulationThreads { get; set; }
+
+        [Params(1, 2, 4, 8)]
+        public int OptimizationThreads { get; set; }
+
 
         public (double, double)[][] AllGivPoints = new (double, double)[9][];
-        public (double, double)[][] AllNewPoints = new (double, double)[9][];
+        public (double, double)[][][] AllNewPoints = new (double, double)[9][][];
 
         [GlobalSetup]
         public void SetUp()
         {
-            for (int i = 0; i < 8; i++)
+            var r = new Random();
+            string folder = "../../../../../../../bin/Debug/net6.0";
+            for (int i = 0; i <= 8; i++)
             {
-                using (var readerx = new StreamReader($"../../../../../../../Data/x{i+1}.txt")) // ../../../../../../../Data/
-                using (var readery = new StreamReader($"../../../../../../../Data/y{i+1}.txt"))
-                using (var readerxx = new StreamReader($"../../../../../../../Data/xx{i+1}.txt"))
-                using (var readeryy = new StreamReader($"../../../../../../../Data/yy{i+1}.txt"))
+                using (var readerx = new StreamReader($"{folder}/x{i}.txt"))
+                using (var readery = new StreamReader($"{folder}/y{i}.txt"))
                 {
                     var x = readerx.ReadToEnd().Trim().Split("\r\n");
-                    var xx = readerxx.ReadToEnd().Trim().Split("\r\n");
                     var y = readery.ReadToEnd().Trim().Split("\r\n");
-                    var yy = readeryy.ReadToEnd().Trim().Split("\r\n");
 
                     AllGivPoints[i] = new (double, double)[x.Length];
-                    AllNewPoints[i] = new (double, double)[x.Length];
 
-                    AllGivPoints[i] = x.Zip(x, (x, y) => (double.Parse(x, NumberStyles.Any), double.Parse(y, NumberStyles.Any))).ToArray();
-                    AllNewPoints[i] = xx.Zip(yy, (x, y) => (double.Parse(x, NumberStyles.Any), double.Parse(y, NumberStyles.Any))).ToArray();
+                    AllGivPoints[i] = x.Zip(y, (x, y) => (double.Parse(x, NumberStyles.Any), double.Parse(y, NumberStyles.Any))).ToArray();
+                    AllNewPoints[i] = Enumerable.Range(0, Optimization.MAX_RANDOMIZATION).Select((_) => Optimization.GenRandomPoints(x.Length, r)).ToArray();
                 }
             }
         }
 
         [Benchmark]
-        public double Test1()
+        public Result? Test1()
         {
-            return Optimization.Optimize(AllGivPoints[0], AllNewPoints[0], ThredCount);
+            return Optimization.Start(AllGivPoints[1], AllNewPoints[1], CalulationThreads, OptimizationThreads);
         }
-        [Benchmark]
-        public double Test2()
-        {
-            return Optimization.Optimize(AllGivPoints[1], AllNewPoints[1], ThredCount);
-        }
-        [Benchmark]
-        public double Test3()
-        {
-            return Optimization.Optimize(AllGivPoints[2], AllNewPoints[2], ThredCount);
-        }
-        [Benchmark]
-        public double Test4()
-        {
-            return Optimization.Optimize(AllGivPoints[3], AllNewPoints[3], ThredCount);
-        }
-        [Benchmark]
-        public double Test5()
-        {
-            return Optimization.Optimize(AllGivPoints[4], AllNewPoints[4], ThredCount);
-        }
-        //[Benchmark]
-        //public double Test6()
-        //{
-        //    return Optimization.Optimize(AllGivPoints[5], AllNewPoints[5], ThredCount);
-        //}
-        //[Benchmark]
-        //public double Test7()
-        //{
-        //    return Optimization.Optimize(AllGivPoints[6], AllNewPoints[6], ThredCount);
-        //}
-        //[Benchmark]
-        //public double Test8()
-        //{
-        //    return Optimization.Optimize(AllGivPoints[7], AllNewPoints[7], ThredCount);
-        //}
+        
     }
     public class Program
     {

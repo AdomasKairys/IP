@@ -9,6 +9,22 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.13.10" />
+    <PackageReference Include="IronPython" Version="3.4.1" />
+    <PackageReference Include="pythonnet" Version="3.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Python\Visualization.py">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+    <None Update="Visualization.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="bin\Debug\net6.0\" />
+    <Folder Include="Data\" />
   </ItemGroup>
 
 </Project>
