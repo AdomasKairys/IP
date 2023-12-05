@@ -54,50 +54,50 @@ namespace IP
         {
             return Optimization.Start(AllGivPoints[2], AllNewPoints[2], OptimizationThreads);
         }
-        [Benchmark]
-        public Result? Test3()
-        {
-            return Optimization.Start(AllGivPoints[3], AllNewPoints[3], OptimizationThreads);
-        }
-        [Benchmark]
-        public Result? Test4()
-        {
-            return Optimization.Start(AllGivPoints[4], AllNewPoints[4], OptimizationThreads);
-        }
-        [Benchmark]
-        public Result? Test5()
-        {
-            return Optimization.Start(AllGivPoints[5], AllNewPoints[5], OptimizationThreads);
-        }
-        [Benchmark]
-        public Result? Test6()
-        {
-            return Optimization.Start(AllGivPoints[6], AllNewPoints[6], OptimizationThreads);
-        }
-        [Benchmark]
-        public Result? Test7()
-        {
-            return Optimization.Start(AllGivPoints[7], AllNewPoints[7], OptimizationThreads);
-        }
-        [Benchmark]
-        public Result? Test8()
-        {
-            return Optimization.Start(AllGivPoints[8], AllNewPoints[8], OptimizationThreads);
-        }
+        //[Benchmark]
+        //public Result? Test3()
+        //{
+        //    return Optimization.Start(AllGivPoints[3], AllNewPoints[3], OptimizationThreads);
+        //}
+        //[Benchmark]
+        //public Result? Test4()
+        //{
+        //    return Optimization.Start(AllGivPoints[4], AllNewPoints[4], OptimizationThreads);
+        //}
+        //[Benchmark]
+        //public Result? Test5()
+        //{
+        //    return Optimization.Start(AllGivPoints[5], AllNewPoints[5], OptimizationThreads);
+        //}
+        //[Benchmark]
+        //public Result? Test6()
+        //{
+        //    return Optimization.Start(AllGivPoints[6], AllNewPoints[6], OptimizationThreads);
+        //}
+        //[Benchmark]
+        //public Result? Test7()
+        //{
+        //    return Optimization.Start(AllGivPoints[7], AllNewPoints[7], OptimizationThreads);
+        //}
+        //[Benchmark]
+        //public Result? Test8()
+        //{
+        //    return Optimization.Start(AllGivPoints[8], AllNewPoints[8], OptimizationThreads);
+        //}
 
     }
-    //public class Program
-    //{
-    //    //dotnet run --project IP.csproj -c Release
-    //    static void Main(string[] args)
-    //    {
-    //        var summary = BenchmarkRunner.Run<Benchmark>();
-    //        //Benchmark benchmark = new Benchmark();
-    //        //benchmark.SetUp();
+    public class Program
+    {
+        //dotnet run --project IP.csproj -c Release
+        //static void Main(string[] args)
+        //{
+        //    var summary = BenchmarkRunner.Run<Benchmark>();
+        //    //Benchmark benchmark = new Benchmark();
+        //    //benchmark.SetUp();
 
-    //        //benchmark.Test1();
+        //    //benchmark.Test1();
 
 
-    //    }
-    //}
+        //}
+    }
 }

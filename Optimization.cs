@@ -37,7 +37,8 @@ namespace IP
         public const int MAX_ITER = 500;
         public const int MAX_RANDOMIZATION = 200;
 
-        private static int THREAD_COUNT_OPT = 6; //thread count for optimizations (multiple optimization calls)
+        //thread count for optimizations (multiple optimization calls)
+        private static int THREAD_COUNT_OPT = 6; 
 
         private static double EuclideanNorm((double, double)[] val)
         {
@@ -228,7 +229,7 @@ namespace IP
 
                 try
                 {
-                    Runtime.PythonDLL = 
+                    Runtime.PythonDLL =
                         @"C:\Users\kairy\AppData\Local\Programs\Python\Python312\python312.dll";
                     PythonEngine.Initialize();
                 }
