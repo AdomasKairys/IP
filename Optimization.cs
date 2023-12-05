@@ -32,7 +32,7 @@ namespace IP
     internal class Optimization
     {
         //change these to get more accurate optimization
-        public const double EPS = 1e-3;
+        public const double EPS = 1e-3; 
         public const double STEP = 0.2;
         public const int MAX_ITER = 500;
         public const int MAX_RANDOMIZATION = 200;
@@ -271,7 +271,7 @@ namespace IP
                 Stopwatch stopwatch = new();
                 stopwatch.Start();
 
-                var result = Start(initPoints, newPoints);
+                var result = Start(initPoints, newPoints, THREAD_COUNT_OPT);
 
                 if (result == null)
                     break;
