@@ -228,7 +228,8 @@ namespace IP
 
                 try
                 {
-                    Runtime.PythonDLL = @"C:\Users\kairy\AppData\Local\Programs\Python\Python312\python312.dll";
+                    Runtime.PythonDLL = 
+                        @"C:\Users\kairy\AppData\Local\Programs\Python\Python312\python312.dll";
                     PythonEngine.Initialize();
                 }
                 catch (Exception)
@@ -239,7 +240,7 @@ namespace IP
 
 
 
-                Console.WriteLine("Choose data size 0-8 or generate new random 9 (or non-number to exit):");
+                Console.WriteLine("Choose data size 0-8 (or non-number to exit):");
                 string? input = Console.ReadLine();
 
                 if (!int.TryParse(input, out int choice))
@@ -249,29 +250,12 @@ namespace IP
                 {
                     initPoints = ReadPoints($"x{choice}.txt", $"y{choice}.txt");
                 }
-                else if (choice == 9)
-                {
-                    Console.Write("Choose random data size 3-100 (or non-number to exit):");
-                    input = Console.ReadLine();
-
-                    if (!int.TryParse(input, out int size))
-                        return;
-
-                    if (size < 3 || size > 100)
-                    {
-                        Console.WriteLine("*Please input correct number");
-                        continue;
-                    }
-
-                    initPoints = GenRandomPoints(size, r);
-                }
                 else
                 {
                     Console.WriteLine("*Please input correct number");
                     continue;
                 }
 
-                (double, double)[] nitPoints = { (5.42641287, -9.58496101), (2.6729647, 4.97607765), (-0.02985975, -5.50406709), (-6.0387427, 5.21061424), (-6.61778327, -8.23320372) };
 
                 Console.WriteLine("Choose the ammount of new points to create (0 <= for random or non-number to exit):");
                 input = Console.ReadLine();
@@ -287,7 +271,7 @@ namespace IP
                 Stopwatch stopwatch = new();
                 stopwatch.Start();
 
-                var result = Start(nitPoints, newPoints);
+                var result = Start(initPoints, newPoints);
 
                 if (result == null)
                     break;
