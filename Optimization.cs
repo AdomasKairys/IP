@@ -75,9 +75,9 @@ namespace IP
             double priceOfPoint((double, double) p2) =>
                             0.4 + (Math.Pow(p2.Item1, 4) + Math.Pow(p2.Item2, 4) + 200 * (Math.Sin(p2.Item1) + Math.Cos(p2.Item2))) / 1000;
 
+            (double, double)[] comb = new (double, double)[points1.Length + points2.Length - 1];
+            points1.CopyTo(comb, 0);
             double fullPrice = points2.Select((p2,i) => {
-                (double, double)[] comb = new (double, double)[points1.Length + points2.Length - 1];
-                points1.CopyTo(comb, 0);
                 points2.Where((val, indx) => indx != i).ToArray().CopyTo(comb, points1.Length);
                 return Func(comb, p2, priceBtwPoints, priceOfPoint);
             }).Sum();
@@ -104,11 +104,11 @@ namespace IP
                         (4 * Math.Pow(p1.Item2, 3) + 200 * Math.Cos(p1.Item2)) / 1000;
 
 
+            (double, double)[] comb = new (double, double)[points1.Length + points2.Length - 1];
+            points1.CopyTo(comb, 0);
             (double, double)[] jac = points2.Select((val,i) =>
             {
-                (double, double)[] comb = new (double, double)[points1.Length + points2.Length - 1];
-                points1.CopyTo(comb, 0);
-                points2.Where((val, indx) => indx != i).ToArray().CopyTo(comb, points1.Length - 1);
+                points2.Where((val, indx) => indx != i).ToArray().CopyTo(comb, points1.Length);
 
                 double dx = Func(comb, points2[i], dxSum, dxInit);
                 double dy = Func(comb, points2[i], dySum, dyInit);
@@ -218,109 +218,109 @@ namespace IP
                     (newPoints) => Optimize(initPoints, newPoints)).Min();
         }
 
-        //static void Main(string[] args)
-        //{
-        //    //GenDataFiles();
-        //    var r = new Random(Guid.NewGuid().GetHashCode());
-        //    (double, double)[] initPoints;
-        //    while (true)
-        //    {
-        //        try
-        //        {
-        //            Runtime.PythonDLL = @"C:\Users\kairy\AppData\Local\Programs\Python\Python312\python312.dll";
-        //            PythonEngine.Initialize();
-        //        }
-        //        catch (Exception)
-        //        {
-        //            Console.WriteLine("Could not locate python dll file, continue (y/n)?");
-        //            if (Console.ReadLine() == "y")
-        //                continue;
-        //            break;
-        //        }
+        static void Main(string[] args)
+        {
+            //GenDataFiles();
+            var r = new Random(Guid.NewGuid().GetHashCode());
+            (double, double)[] initPoints;
+            while (true)
+            {
+
+                try
+                {
+                    Runtime.PythonDLL = @"C:\Users\kairy\AppData\Local\Programs\Python\Python312\python312.dll";
+                    PythonEngine.Initialize();
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("Could not locate python dll file");
+                    return;
+                }
 
 
 
-        //        Console.WriteLine("Choose data size 0-8 or generate new random 9 (or non-number to exit):");
-        //        string? input = Console.ReadLine();
+                Console.WriteLine("Choose data size 0-8 or generate new random 9 (or non-number to exit):");
+                string? input = Console.ReadLine();
 
-        //        if (!int.TryParse(input, out int choice))
-        //            return;
+                if (!int.TryParse(input, out int choice))
+                    return;
 
-        //        if (choice >= 0 && choice <= 8)
-        //        {
-        //            initPoints = ReadPoints($"x{choice}.txt", $"y{choice}.txt");
-        //        }
-        //        else if (choice == 9)
-        //        {
-        //            Console.Write("Choose random data size 3-100 (or non-number to exit):");
-        //            input = Console.ReadLine();
+                if (choice >= 0 && choice <= 8)
+                {
+                    initPoints = ReadPoints($"x{choice}.txt", $"y{choice}.txt");
+                }
+                else if (choice == 9)
+                {
+                    Console.Write("Choose random data size 3-100 (or non-number to exit):");
+                    input = Console.ReadLine();
 
-        //            if (!int.TryParse(input, out int size))
-        //                return;
+                    if (!int.TryParse(input, out int size))
+                        return;
 
-        //            if (size < 3 || size > 100)
-        //            {
-        //                Console.WriteLine("*Please input correct number");
-        //                continue;
-        //            }
+                    if (size < 3 || size > 100)
+                    {
+                        Console.WriteLine("*Please input correct number");
+                        continue;
+                    }
 
-        //            initPoints = GenRandomPoints(size, r);
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine("*Please input correct number");
-        //            continue;
-        //        }
+                    initPoints = GenRandomPoints(size, r);
+                }
+                else
+                {
+                    Console.WriteLine("*Please input correct number");
+                    continue;
+                }
+
+                (double, double)[] nitPoints = { (5.42641287, -9.58496101), (2.6729647, 4.97607765), (-0.02985975, -5.50406709), (-6.0387427, 5.21061424), (-6.61778327, -8.23320372) };
+
+                Console.WriteLine("Choose the ammount of new points to create (0 <= for random or non-number to exit):");
+                input = Console.ReadLine();
+
+                if (!int.TryParse(input, out int newsize))
+                    return;
+
+                if (newsize <= 0)
+                    newsize = initPoints.Length;
+
+                (double, double)[][] newPoints = Enumerable.Range(0, MAX_RANDOMIZATION).Select((_) => GenRandomPoints(newsize, r)).ToArray();
+
+                Stopwatch stopwatch = new();
+                stopwatch.Start();
+
+                var result = Start(nitPoints, newPoints);
+
+                if (result == null)
+                    break;
+
+                stopwatch.Stop();
+                TimeSpan ts = stopwatch.Elapsed;
+                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}", ts.Hours, ts.Minutes, ts.Seconds, ts.Milliseconds / 10);
+
+                using (var writerx = new StreamWriter("xx.txt"))
+                using (var writery = new StreamWriter("yy.txt"))
+                {
+                    foreach (var point in result.Points)
+                    {
+                        Console.WriteLine(point.Item1 + " " + point.Item2);
+                        writerx.WriteLine(point.Item1);
+                        writery.WriteLine(point.Item2);
+
+                    }
+                }
+
+                Console.WriteLine("Target function value " + result.Value);
+                Console.WriteLine("RunTime " + elapsedTime);
+
+                using (Py.GIL())
+                {
+                    var pyScript = Py.Import("Visualization");
+                    var pyString = new PyString(choice.ToString());
+                    pyScript.InvokeMethod("visualization", pyString);
+                }
 
 
-        //        Console.WriteLine("Choose the ammount of new points to create (0 <= for random or non-number to exit):");
-        //        input = Console.ReadLine();
-
-        //        if (!int.TryParse(input, out int newsize))
-        //            return;
-
-        //        if (newsize <= 0)
-        //            newsize = initPoints.Length;
-
-        //        (double, double)[][] newPoints = Enumerable.Range(0, MAX_RANDOMIZATION).Select((_) => GenRandomPoints(newsize, r)).ToArray();
-
-        //        Stopwatch stopwatch = new();
-        //        stopwatch.Start();
-
-        //        var result = Start(initPoints, newPoints);
-
-        //        if(result == null)
-        //            break;
-
-        //        stopwatch.Stop();
-        //        TimeSpan ts = stopwatch.Elapsed;
-        //        string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",ts.Hours, ts.Minutes, ts.Seconds,ts.Milliseconds / 10);
-
-        //        using(var writerx = new StreamWriter("xx.txt"))
-        //        using (var writery = new StreamWriter("yy.txt"))
-        //        {
-        //            foreach (var point in result.Points)
-        //            {
-        //                Console.WriteLine(point.Item1 + " " + point.Item2);
-        //                writerx.WriteLine(point.Item1);
-        //                writery.WriteLine(point.Item2);
-
-        //            }
-        //        }
-
-        //        Console.WriteLine("Target function value " + result.Value);
-        //        Console.WriteLine("RunTime " + elapsedTime);
-
-        //        using (Py.GIL())
-        //        {
-        //            var pyScript = Py.Import("Visualization");
-        //            var pyString = new PyString(choice.ToString());
-        //            pyScript.InvokeMethod("visualization", pyString);
-        //        }
-
-
-        //        break;
-        //    }
-        //}
+                break;
+            }
+        }
     }
 }

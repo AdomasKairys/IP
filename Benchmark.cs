@@ -86,18 +86,18 @@ namespace IP
         }
 
     }
-    public class Program
-    {
-        //dotnet run --project IP.csproj -c Release
-        static void Main(string[] args)
-        {
-            var summary = BenchmarkRunner.Run<Benchmark>();
-            //Benchmark benchmark = new Benchmark();
-            //benchmark.SetUp();
+    //public class Program
+    //{
+    //    //dotnet run --project IP.csproj -c Release
+    //    static void Main(string[] args)
+    //    {
+    //        var summary = BenchmarkRunner.Run<Benchmark>();
+    //        //Benchmark benchmark = new Benchmark();
+    //        //benchmark.SetUp();
 
-            //benchmark.Test1();
+    //        //benchmark.Test1();
 
 
-        }
-    }
+    //    }
+    //}
 }
